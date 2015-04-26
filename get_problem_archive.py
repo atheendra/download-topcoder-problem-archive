@@ -127,6 +127,6 @@ parser.add_option("-t", "--category", dest="category",
 (options, args) = parser.parse_args()
 link = construct_link_from_options()
 destination_dir = options.destination_dir
-completed_ids = options.completed_ids
+completed_ids_file = options.completed_ids
 
 download_new_ids(link, completed_ids_file)
