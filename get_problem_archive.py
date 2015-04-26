@@ -53,6 +53,7 @@ def download_new_ids(link, completed_ids_file):
     current_ids = get_ids_from_website(link)
     download_ids = [ id for id in current_ids if id not in completed_ids ]
 
+    call(["mkdir", "-p", destination_dir])
     os.chdir(destination_dir)
     for id in download_ids:
         download_single_id(id, completed_ids_file) 
