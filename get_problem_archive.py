@@ -3,6 +3,7 @@ import urllib2
 import string
 import sys
 import os
+import os.path
 from subprocess import call
 from BeautifulSoup import BeautifulSoup
 from optparse import OptionParser
@@ -29,6 +30,8 @@ def get_ids_from_website(link):
 
 
 def get_completed_problem_ids(file):
+    if not os.path.isfile(file):
+        return []
     infile = open(file, "r")
     completed_ids = []
 
@@ -86,7 +89,7 @@ headers = { 'User-Agent' : user_agent }
 #Global variables
 base_link = "http://community.topcoder.com/tc?module=ProblemArchive"
 problem_statement_pattern = "/stat?c=problem_statement&pm="
-destination_dir = ""
+destination_dir = "~/Topcoder"
 completed_ids_file = "~/problem_ids.txt"
 topcoder_options = {"sr":"", "er":"", "sc":"", "sd":"", "class":"",
                     "cat":"", "div1l":"", "div2l":"", "mind1s":"",
@@ -115,18 +118,22 @@ parser.add_option("-n", "--number_of_problems", dest="n",
                   help="Number of problems to download (Used only when link"
                        +" is not specified)", default=1000)
 parser.add_option("--d1", dest="d1",
-                  help="Division I Level (Used only when link is "
+                  help="Division I Level in percentage (example: --d1=5 (Used only when link is "
                        + "not specified)", default="")
 parser.add_option("--d2", dest="d2",
-                  help="Division II Level (Used only when link is "
+                    help="Division II Level in percentage (example: --d2=5)"
+                       + " (Used only when link is "
                        + "not specified)", default="")
 parser.add_option("-t", "--category", dest="category",
                   help="Category (Used only when link is "
-                       + "not specified)", default="")
+                       + "not specified). Here's a list of categories="
+                       + str(problem_categories), default="")
 
 (options, args) = parser.parse_args()
 link = construct_link_from_options()
-destination_dir = options.destination_dir
-completed_ids_file = options.completed_ids
+if options.destination_dir is not None:
+    destination_dir = options.destination_dir
+if options.completed_ids is not None:
+    completed_ids_file = options.completed_ids
 
 download_new_ids(link, completed_ids_file)
