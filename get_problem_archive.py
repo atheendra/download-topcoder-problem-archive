@@ -2,12 +2,21 @@ import urllib
 import urllib2
 import string
 import sys
-import os
+import os, errno
 import os.path
 from subprocess import call
 from BeautifulSoup import BeautifulSoup
 from optparse import OptionParser
 import httplib
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else: raise
 
 def switch_http_version(vsn):
     httplib.HTTPConnection._http_vsn = vsn
@@ -63,7 +72,7 @@ def download_new_ids(link, completed_ids_file):
     current_ids = get_ids_from_website(link)
     download_ids = [ id for id in current_ids if id not in completed_ids ]
 
-    call(["mkdir", "-p", destination_dir])
+    mkdir_p(destination_dir)
     os.chdir(destination_dir)
     for id in download_ids:
         download_single_id(id, completed_ids_file) 
