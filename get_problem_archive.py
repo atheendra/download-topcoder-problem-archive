@@ -7,11 +7,18 @@ import os.path
 from subprocess import call
 from BeautifulSoup import BeautifulSoup
 from optparse import OptionParser
+import httplib
+
+def switch_http_version(vsn):
+    httplib.HTTPConnection._http_vsn = vsn
+    httplib.HTTPConnection._http_vsn_str = 'HTTP/' + str(float(vsn)/10)
 
 
 def get_soup(link):
+    switch_http_version(10)
     response = urllib2.urlopen(link)
     html_page = response.read()
+    switch_http_version(11)
     pool = BeautifulSoup(html_page)
     return pool
 
